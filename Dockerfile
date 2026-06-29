@@ -14,8 +14,9 @@ RUN mvn clean package -DskipTests
 # Tomcat 배포 스테이지
 FROM tomcat:10-jre17-temurin
 
-# Tomcat 기본 기동 포트를 8080에서 10000으로 내부 변경
-RUN sed -i 's/port="8080"/port="10000"/g' /usr/local/tomcat/conf/server.xml
+# Tomcat 기본 기동 포트를 8080에서 10000으로 내부 변경 및 셧다운 포트 비활성화
+RUN sed -i 's/port="8080"/port="10000"/g' /usr/local/tomcat/conf/server.xml && \
+    sed -i 's/port="8005"/port="-1"/g' /usr/local/tomcat/conf/server.xml
 
 # 빌드된 WAR 파일을 Tomcat의 webapps 디렉토리에 복사
 COPY --from=builder /app/target/*.war /usr/local/tomcat/webapps/ROOT.war
